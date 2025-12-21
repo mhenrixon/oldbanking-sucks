@@ -538,7 +538,11 @@
             No fax. No branch visits. No spreadsheets.
         </div>
         <div class="bsod-text" style="margin-top: 40px;">
-            Press any key<span class="bsod-cursor">_</span>
+            <span id="bsod-wait">Please wait<span class="bsod-cursor">_</span></span>
+            <span id="bsod-ready" style="display: none;">Press any key<span class="bsod-cursor">_</span></span>
+        </div>
+        <div class="bsod-text" style="font-size: 12px; opacity: 0.6; margin-top: 10px;">
+            <span id="bsod-countdown">Estimated wait: 30 seconds</span>
         </div>
     </div>
 
@@ -566,16 +570,40 @@
             }
         }
 
+        let bsodReady = false;
+        let bsodCountdown = 30;
+
         function showBSOD() {
             document.getElementById('step-indicator').style.display = 'none';
             document.getElementById('bsod').style.display = 'flex';
+
+            // Start countdown
+            const countdownEl = document.getElementById('bsod-countdown');
+            const countdownInterval = setInterval(() => {
+                bsodCountdown--;
+                if (bsodCountdown > 0) {
+                    countdownEl.textContent = `Estimated wait: ${bsodCountdown} seconds`;
+                } else {
+                    clearInterval(countdownInterval);
+                    bsodReady = true;
+                    document.getElementById('bsod-wait').style.display = 'none';
+                    document.getElementById('bsod-ready').style.display = 'inline';
+                    countdownEl.textContent = 'Ready! Click or press any key.';
+                }
+            }, 1000);
+        }
+
+        function goToZazu() {
+            if (bsodReady) {
+                window.location.href = 'https://get-zazu.com';
+            }
         }
 
         // Keyboard & click navigation
         document.addEventListener('keydown', function(e) {
             const bsod = document.getElementById('bsod');
             if (bsod.style.display === 'flex') {
-                window.location.href = 'https://get-zazu.com';
+                goToZazu();
             } else if (e.key === 'Enter' || e.key === ' ') {
                 if (currentScreen < totalScreens) {
                     nextScreen();
@@ -585,9 +613,7 @@
             }
         });
 
-        document.getElementById('bsod').addEventListener('click', function() {
-            window.location.href = 'https://get-zazu.com';
-        });
+        document.getElementById('bsod').addEventListener('click', goToZazu);
 
         // Pending counter
         let pending = 2847293481;

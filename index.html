@@ -553,7 +553,7 @@
                 Preparing to leave legacy banking behind<span class="bsod-cursor">_</span>
             </div>
             <div class="bsod-text" style="font-size: 12px; opacity: 0.6; margin-top: 10px;">
-                <span id="bsod-countdown">Rebooting in 10 seconds...</span>
+                <span id="bsod-countdown">Rebooting in 5 seconds...</span>
             </div>
         </div>
         <div id="bsod-reboot" style="display: none;">
@@ -599,7 +599,7 @@
             }
         }
 
-        let bsodCountdown = 10;
+        let bsodCountdown = 5;
 
         function showBSOD() {
             document.getElementById('step-indicator').style.display = 'none';
@@ -645,11 +645,18 @@
                     step++;
                 } else {
                     clearInterval(rebootInterval);
+                    // Black screen transition
+                    document.getElementById('bsod').style.background = '#000';
+                    document.getElementById('bsod-reboot').innerHTML = `
+                        <div style="color: #fff; font-size: 16px;">
+                            Launching Zazu<span class="bsod-cursor">_</span>
+                        </div>
+                    `;
                     setTimeout(() => {
                         window.location.href = 'https://get-zazu.com';
                     }, 1500);
                 }
-            }, 1500);
+            }, 1000);
         }
 
         // Keyboard navigation for screens

@@ -320,6 +320,20 @@
             to { visibility: hidden; }
         }
 
+        .bsod-progress {
+            width: 300px;
+            height: 20px;
+            background: #000088;
+            border: 2px solid #aaaaaa;
+        }
+
+        .bsod-progress-bar {
+            height: 100%;
+            width: 0%;
+            background: #aaaaaa;
+            transition: width 0.3s ease;
+        }
+
         /* Step indicator */
         .step-indicator {
             position: fixed;
@@ -523,26 +537,41 @@
 
     <!-- BSOD Final -->
     <div class="bsod" id="bsod">
-        <div class="bsod-title">Zazu</div>
-        <div class="bsod-text">
-            An error has occurred.<br>
-            To continue:
+        <div id="bsod-error">
+            <div class="bsod-title">Zazu</div>
+            <div class="bsod-text">
+                An error has occurred.<br>
+                To continue:
+            </div>
+            <div class="bsod-text" style="margin-top: 30px;">
+                <span class="bsod-highlight">Business banking, built for today.</span>
+            </div>
+            <div class="bsod-text" style="font-size: 14px;">
+                No fax. No branch visits. No spreadsheets.
+            </div>
+            <div class="bsod-text" style="margin-top: 40px;">
+                Preparing to leave legacy banking behind<span class="bsod-cursor">_</span>
+            </div>
+            <div class="bsod-text" style="font-size: 12px; opacity: 0.6; margin-top: 10px;">
+                <span id="bsod-countdown">Rebooting in 10 seconds...</span>
+            </div>
         </div>
-        <div class="bsod-text">
-            Press <span class="bsod-key">ENTER</span> to leave legacy banking behind.
-        </div>
-        <div class="bsod-text" style="margin-top: 30px;">
-            <span class="bsod-highlight">Business banking, built for today.</span>
-        </div>
-        <div class="bsod-text" style="font-size: 14px;">
-            No fax. No branch visits. No spreadsheets.
-        </div>
-        <div class="bsod-text" style="margin-top: 40px;">
-            <span id="bsod-wait">Please wait<span class="bsod-cursor">_</span></span>
-            <span id="bsod-ready" style="display: none;">Press any key<span class="bsod-cursor">_</span></span>
-        </div>
-        <div class="bsod-text" style="font-size: 12px; opacity: 0.6; margin-top: 10px;">
-            <span id="bsod-countdown">Estimated wait: 30 seconds</span>
+        <div id="bsod-reboot" style="display: none;">
+            <div class="bsod-text" style="font-size: 14px; margin-bottom: 30px;">
+                Legacy banking system uninstalled successfully.
+            </div>
+            <div class="bsod-text" id="reboot-status">
+                Rebooting<span class="bsod-cursor">_</span>
+            </div>
+            <div class="bsod-text" style="margin-top: 40px;">
+                <span class="bsod-highlight" id="reboot-message">Initializing...</span>
+            </div>
+            <div class="bsod-progress" style="margin-top: 30px;">
+                <div class="bsod-progress-bar" id="reboot-progress"></div>
+            </div>
+            <div class="bsod-text" style="font-size: 12px; opacity: 0.6; margin-top: 15px;">
+                Loading Zazu Banking OS v2024.12
+            </div>
         </div>
     </div>
 
@@ -570,41 +599,63 @@
             }
         }
 
-        let bsodReady = false;
-        let bsodCountdown = 30;
+        let bsodCountdown = 10;
 
         function showBSOD() {
             document.getElementById('step-indicator').style.display = 'none';
             document.getElementById('bsod').style.display = 'flex';
 
-            // Start countdown
+            // Start countdown then auto-reboot
             const countdownEl = document.getElementById('bsod-countdown');
             const countdownInterval = setInterval(() => {
                 bsodCountdown--;
                 if (bsodCountdown > 0) {
-                    countdownEl.textContent = `Estimated wait: ${bsodCountdown} seconds`;
+                    countdownEl.textContent = `Rebooting in ${bsodCountdown} seconds...`;
                 } else {
                     clearInterval(countdownInterval);
-                    bsodReady = true;
-                    document.getElementById('bsod-wait').style.display = 'none';
-                    document.getElementById('bsod-ready').style.display = 'inline';
-                    countdownEl.textContent = 'Ready! Click or press any key.';
+                    startReboot(); // Auto-start reboot!
                 }
             }, 1000);
         }
 
-        function goToZazu() {
-            if (bsodReady) {
-                window.location.href = 'https://get-zazu.com';
-            }
+        function startReboot() {
+            document.getElementById('bsod-error').style.display = 'none';
+            document.getElementById('bsod-reboot').style.display = 'block';
+
+            const messages = [
+                'Uninstalling COBOL dependencies...',
+                'Removing fax machine drivers...',
+                'Deleting 3-5 business days...',
+                'Clearing branch visit requirements...',
+                'Installing instant transfers...',
+                'Loading modern banking APIs...',
+                'Configuring real-time processing...',
+                'Initializing Zazu Banking OS...',
+                'Welcome to the future!'
+            ];
+
+            const progressBar = document.getElementById('reboot-progress');
+            const messageEl = document.getElementById('reboot-message');
+            let step = 0;
+
+            const rebootInterval = setInterval(() => {
+                if (step < messages.length) {
+                    messageEl.textContent = messages[step];
+                    progressBar.style.width = ((step + 1) / messages.length * 100) + '%';
+                    step++;
+                } else {
+                    clearInterval(rebootInterval);
+                    setTimeout(() => {
+                        window.location.href = 'https://get-zazu.com';
+                    }, 1500);
+                }
+            }, 1500);
         }
 
-        // Keyboard & click navigation
+        // Keyboard navigation for screens
         document.addEventListener('keydown', function(e) {
             const bsod = document.getElementById('bsod');
-            if (bsod.style.display === 'flex') {
-                goToZazu();
-            } else if (e.key === 'Enter' || e.key === ' ') {
+            if (bsod.style.display !== 'flex' && (e.key === 'Enter' || e.key === ' ')) {
                 if (currentScreen < totalScreens) {
                     nextScreen();
                 } else {
@@ -612,8 +663,6 @@
                 }
             }
         });
-
-        document.getElementById('bsod').addEventListener('click', goToZazu);
 
         // Pending counter
         let pending = 2847293481;

@@ -4,8 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Old Banking Sucks</title>
-    <meta name="description" content="A love letter to legacy banking software that processes transactions like it's 1987.">
+    <meta name="description" content="Legacy banking is broken. We're fixing it.">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏦</text></svg>">
+    <meta property="og:title" content="Old Banking Sucks">
+    <meta property="og:description" content="Legacy banking is broken. We're fixing it.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://oldbanking.sucks">
     <style>
         @font-face {
             font-family: 'MS Sans Serif';
@@ -23,20 +27,82 @@
             font-size: 12px;
             background: #008080;
             min-height: 100vh;
+            overflow-x: hidden;
+            cursor: default;
+        }
+
+        /* Background jokes layer */
+        .background-layer {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            padding: 20px;
+            opacity: 0.4;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .bg-window {
+            background: #c0c0c0;
+            border: 2px solid;
+            border-color: #ffffff #808080 #808080 #ffffff;
+            position: absolute;
+            font-size: 11px;
+            max-width: 350px;
+        }
+
+        .bg-window.pos-1 { top: 5%; left: 3%; transform: rotate(-2deg); }
+        .bg-window.pos-2 { top: 15%; right: 5%; transform: rotate(1deg); }
+        .bg-window.pos-3 { top: 45%; left: 2%; transform: rotate(1deg); }
+        .bg-window.pos-4 { top: 55%; right: 3%; transform: rotate(-1deg); }
+        .bg-window.pos-5 { bottom: 15%; left: 5%; transform: rotate(2deg); }
+        .bg-window.pos-6 { bottom: 5%; right: 8%; transform: rotate(-2deg); }
+
+        .bg-titlebar {
+            background: linear-gradient(90deg, #000080, #1084d0);
+            color: white;
+            font-weight: bold;
+            padding: 2px 5px;
+            font-size: 11px;
+        }
+
+        .bg-content {
+            padding: 10px;
+            font-size: 11px;
+        }
+
+        .bg-content ul {
+            margin: 0;
+            padding-left: 15px;
+        }
+
+        .bg-content li {
+            margin: 3px 0;
+        }
+
+        /* Main alert layer */
+        .alert-layer {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             display: flex;
             align-items: center;
             justify-content: center;
             padding: 20px;
-            cursor: default;
+            z-index: 100;
         }
 
-        /* Windows 95 Window Styling */
+        /* Windows 95 Window */
         .win95-window {
             background: #c0c0c0;
             border: 2px solid;
             border-color: #ffffff #808080 #808080 #ffffff;
-            box-shadow: inset 1px 1px 0 #dfdfdf, inset -1px -1px 0 #0a0a0a, 8px 8px 0 rgba(0,0,0,0.3);
-            max-width: 500px;
+            box-shadow: inset 1px 1px 0 #dfdfdf, inset -1px -1px 0 #0a0a0a, 8px 8px 0 rgba(0,0,0,0.4);
+            max-width: 480px;
             width: 100%;
             animation: windowAppear 0.3s ease-out;
         }
@@ -82,25 +148,21 @@
             cursor: pointer;
         }
 
-        .win95-btn-titlebar:active {
-            border-color: #808080 #ffffff #ffffff #808080;
-        }
-
         .win95-content {
             padding: 20px;
         }
 
-        /* Windows 95 Buttons */
+        /* Buttons */
         .win95-btn {
             background: #c0c0c0;
             border: 2px solid;
             border-color: #ffffff #808080 #808080 #ffffff;
             box-shadow: inset 1px 1px 0 #dfdfdf, inset -1px -1px 0 #0a0a0a;
-            padding: 6px 25px;
+            padding: 8px 30px;
             font-family: 'MS Sans Serif', 'Tahoma', 'Arial', sans-serif;
             font-size: 12px;
             cursor: pointer;
-            min-width: 80px;
+            min-width: 100px;
         }
 
         .win95-btn:hover {
@@ -112,28 +174,12 @@
             box-shadow: inset -1px -1px 0 #dfdfdf, inset 1px 1px 0 #0a0a0a;
         }
 
-        .win95-btn:focus {
-            outline: 1px dotted #000;
-            outline-offset: -4px;
-        }
-
         .win95-btn-primary {
-            background: #c0c0c0;
-            border: 3px solid;
-            border-color: #000 #000 #000 #000;
+            border: 3px solid #000;
             box-shadow: inset 2px 2px 0 #fff, inset -2px -2px 0 #808080;
         }
 
-        /* Inset panels */
-        .win95-inset {
-            background: #ffffff;
-            border: 2px solid;
-            border-color: #808080 #ffffff #ffffff #808080;
-            box-shadow: inset 1px 1px 0 #0a0a0a, inset -1px -1px 0 #dfdfdf;
-            padding: 10px;
-        }
-
-        /* Error icon */
+        /* Icons */
         .error-icon {
             width: 32px;
             height: 32px;
@@ -146,27 +192,6 @@
             font-weight: bold;
             font-size: 20px;
             flex-shrink: 0;
-        }
-
-        .warning-icon {
-            width: 32px;
-            height: 32px;
-            background: #ffff00;
-            clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #000;
-            font-weight: bold;
-            font-size: 20px;
-            flex-shrink: 0;
-            position: relative;
-        }
-
-        .warning-icon::after {
-            content: "!";
-            position: absolute;
-            top: 12px;
         }
 
         .info-icon {
@@ -183,29 +208,11 @@
             flex-shrink: 0;
         }
 
-        /* Progress bar */
-        .win95-progress {
-            background: #ffffff;
-            border: 2px solid;
-            border-color: #808080 #ffffff #ffffff #808080;
-            height: 20px;
-            padding: 2px;
-            margin: 10px 0;
-        }
-
-        .win95-progress-bar {
-            background: #000080;
-            height: 100%;
-            width: 0%;
-            transition: width 0.5s ease;
-        }
-
-        /* Error dialog layout */
+        /* Dialog layout */
         .dialog-row {
             display: flex;
             gap: 15px;
             align-items: flex-start;
-            margin-bottom: 15px;
         }
 
         .dialog-text {
@@ -213,8 +220,8 @@
         }
 
         .dialog-text p {
-            margin-bottom: 8px;
-            line-height: 1.5;
+            margin-bottom: 10px;
+            line-height: 1.6;
         }
 
         .dialog-buttons {
@@ -224,35 +231,36 @@
             margin-top: 20px;
         }
 
-        /* Input field */
-        .win95-input {
-            background: #fff;
+        /* Counter */
+        .counter-display {
+            font-family: 'Courier New', monospace;
+            font-size: 24px;
+            background: #000;
+            color: #00ff00;
+            padding: 15px;
+            text-align: center;
             border: 2px solid;
             border-color: #808080 #ffffff #ffffff #808080;
-            padding: 4px 6px;
-            font-family: 'MS Sans Serif', 'Tahoma', 'Arial', sans-serif;
-            font-size: 12px;
+            margin: 15px 0;
+        }
+
+        /* Image */
+        .shame-image {
             width: 100%;
+            border: 2px solid;
+            border-color: #808080 #ffffff #ffffff #808080;
+            margin: 10px 0;
         }
 
-        .win95-input:focus {
-            outline: none;
+        /* Screens */
+        .screen {
+            display: none;
+            width: 100%;
+            max-width: 480px;
         }
 
-        .form-row {
-            display: flex;
-            align-items: center;
-            margin-bottom: 10px;
-            gap: 10px;
-        }
-
-        .form-row label {
-            min-width: 100px;
-            text-align: right;
-        }
-
-        .form-row input {
-            flex: 1;
+        .screen.active {
+            display: block;
         }
 
         /* BSOD */
@@ -264,483 +272,256 @@
             height: 100%;
             background: #0000aa;
             color: #ffffff;
-            font-family: 'Perfect DOS VGA 437', 'Courier New', monospace;
-            padding: 10%;
+            font-family: 'Courier New', monospace;
+            padding: 8%;
             display: none;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             text-align: center;
             z-index: 9999;
-            animation: bsodAppear 0.1s ease-out;
-        }
-
-        @keyframes bsodAppear {
-            0% { opacity: 0; }
-            100% { opacity: 1; }
+            cursor: pointer;
         }
 
         .bsod-title {
             background: #aaaaaa;
             color: #0000aa;
-            padding: 2px 15px;
-            margin-bottom: 30px;
+            padding: 4px 20px;
+            margin-bottom: 40px;
             font-weight: bold;
-            font-size: 18px;
+            font-size: 20px;
         }
 
         .bsod-text {
-            font-size: 16px;
-            line-height: 1.8;
-            margin-bottom: 20px;
+            font-size: 18px;
+            line-height: 2;
+            margin-bottom: 15px;
             max-width: 600px;
         }
 
         .bsod-highlight {
             color: #ffff00;
             font-weight: bold;
-            font-size: 20px;
+            font-size: 24px;
         }
 
         .bsod-key {
             background: #aaaaaa;
             color: #0000aa;
-            padding: 2px 8px;
+            padding: 2px 10px;
             font-weight: bold;
         }
 
         .bsod-cursor {
-            animation: bsodBlink 1s steps(2, start) infinite;
+            animation: blink 1s steps(2, start) infinite;
         }
 
-        @keyframes bsodBlink {
+        @keyframes blink {
             to { visibility: hidden; }
         }
 
-        /* Step counter */
+        /* Step indicator */
         .step-indicator {
             position: fixed;
-            bottom: 20px;
-            left: 20px;
-            color: #fff;
-            font-size: 11px;
-            opacity: 0.6;
-            text-shadow: 1px 1px 0 #000;
-        }
-
-        /* Screens container */
-        .screen {
-            display: none;
-            width: 100%;
-            max-width: 500px;
-        }
-
-        .screen.active {
-            display: block;
-        }
-
-        /* Image styling */
-        .shame-image {
-            width: 100%;
-            border: 2px solid;
-            border-color: #808080 #ffffff #ffffff #808080;
-            margin: 10px 0;
-        }
-
-        /* Checkbox */
-        .win95-checkbox {
+            bottom: 15px;
+            left: 50%;
+            transform: translateX(-50%);
             display: flex;
-            align-items: center;
             gap: 8px;
-            margin: 8px 0;
-            cursor: pointer;
+            z-index: 101;
         }
 
-        .win95-checkbox input {
-            width: 13px;
-            height: 13px;
+        .step-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.3);
+            border: 1px solid rgba(255,255,255,0.5);
         }
 
-        /* Marquee */
-        .marquee-container {
-            overflow: hidden;
-            background: #000080;
-            color: #ffff00;
-            padding: 2px 0;
-            font-size: 11px;
-        }
-
-        .marquee-text {
-            display: inline-block;
-            animation: marquee 15s linear infinite;
-            white-space: nowrap;
-            padding-left: 100%;
-        }
-
-        @keyframes marquee {
-            0% { transform: translateX(0); }
-            100% { transform: translateX(-100%); }
-        }
-
-        /* Counter display */
-        .counter-display {
-            font-family: 'Courier New', monospace;
-            font-size: 20px;
-            background: #000;
-            color: #00ff00;
-            padding: 10px;
-            text-align: center;
-            border: 2px solid;
-            border-color: #808080 #ffffff #ffffff #808080;
-        }
-
-        .divider {
-            height: 2px;
-            background: #808080;
-            border-bottom: 1px solid #ffffff;
-            margin: 15px 0;
-        }
-
-        /* Loading dots animation */
-        .loading-dots::after {
-            content: '';
-            animation: dots 1.5s steps(4, end) infinite;
-        }
-
-        @keyframes dots {
-            0%, 20% { content: ''; }
-            40% { content: '.'; }
-            60% { content: '..'; }
-            80%, 100% { content: '...'; }
+        .step-dot.active {
+            background: #fff;
         }
 
         /* Responsive */
-        @media (max-width: 540px) {
-            .win95-window {
-                max-width: 100%;
-            }
-            .form-row {
-                flex-direction: column;
-                align-items: stretch;
-            }
-            .form-row label {
-                text-align: left;
-                margin-bottom: 5px;
-            }
+        @media (max-width: 600px) {
+            .bg-window { display: none; }
+            .background-layer { display: none; }
+            .win95-window { max-width: 100%; }
+            .bsod { padding: 5%; }
+            .bsod-text { font-size: 14px; }
+            .bsod-highlight { font-size: 18px; }
         }
     </style>
 </head>
 <body>
-    <!-- Step Indicator -->
-    <div class="step-indicator" id="step-indicator"></div>
+    <!-- Background layer with jokes -->
+    <div class="background-layer">
+        <div class="bg-window pos-1">
+            <div class="bg-titlebar">📋 Bank Features</div>
+            <div class="bg-content">
+                <ul>
+                    <li>Wire transfers: $50, arrives "eventually"</li>
+                    <li>Password must be EXACTLY 8 characters</li>
+                    <li>Maintenance every Friday at 6 PM</li>
+                    <li>Real-time updates (every 24-48 hrs)</li>
+                </ul>
+            </div>
+        </div>
+        <div class="bg-window pos-2">
+            <div class="bg-titlebar">💬 Banks Say...</div>
+            <div class="bg-content">
+                <ul>
+                    <li>"Please allow 6-8 weeks for your card"</li>
+                    <li>"Try again Monday"</li>
+                    <li>"Visit your local branch"</li>
+                    <li>"We value your patience"</li>
+                </ul>
+            </div>
+        </div>
+        <div class="bg-window pos-3">
+            <div class="bg-titlebar">🔐 Security Check</div>
+            <div class="bg-content">
+                <p>Please enter:</p>
+                <ul>
+                    <li>Mother's maiden name</li>
+                    <li>First pet's name (1987)</li>
+                    <li>Childhood fears</li>
+                </ul>
+            </div>
+        </div>
+        <div class="bg-window pos-4">
+            <div class="bg-titlebar">❌ Error 1987</div>
+            <div class="bg-content">
+                <p>Session expired.</p>
+                <p>You were inactive for 47 seconds.</p>
+                <p>Please start over.</p>
+            </div>
+        </div>
+        <div class="bg-window pos-5">
+            <div class="bg-titlebar">📊 Statistics</div>
+            <div class="bg-content">
+                <p><strong>1974</strong> - Core system deployed</p>
+                <p><strong>∞</strong> - Lines of COBOL</p>
+                <p><strong>$35</strong> - Overdraft fee</p>
+            </div>
+        </div>
+        <div class="bg-window pos-6">
+            <div class="bg-titlebar">ℹ️ Notice</div>
+            <div class="bg-content">
+                <p>For security reasons, this cannot be processed online.</p>
+                <p>Please fax authorization form.</p>
+            </div>
+        </div>
+    </div>
 
-    <!-- Screen 1: Welcome -->
-    <div class="screen active" id="screen-1">
-        <div class="win95-window">
-            <div class="win95-titlebar">
-                <span class="win95-titlebar-text">🏦 LegacyBank Pro™ 97</span>
-                <div class="win95-titlebar-buttons">
-                    <button class="win95-btn-titlebar">_</button>
-                    <button class="win95-btn-titlebar">□</button>
-                    <button class="win95-btn-titlebar">✕</button>
-                </div>
-            </div>
-            <div class="marquee-container">
-                <span class="marquee-text">⚠️ Welcome to LegacyBank Pro™ — Trusted since 1974 — Now with 56k modem support! ⚠️</span>
-            </div>
-            <div class="win95-content">
-                <div class="dialog-row">
-                    <div class="info-icon">i</div>
-                    <div class="dialog-text">
-                        <p><strong>Welcome to LegacyBank Pro™</strong></p>
-                        <p>Your trusted business banking solution since 1974.</p>
-                        <p style="font-size: 11px; color: #666;">Best viewed in Netscape Navigator 4.0</p>
+    <!-- Step indicator dots -->
+    <div class="step-indicator" id="step-indicator">
+        <div class="step-dot active"></div>
+        <div class="step-dot"></div>
+        <div class="step-dot"></div>
+        <div class="step-dot"></div>
+    </div>
+
+    <!-- Main alert layer -->
+    <div class="alert-layer">
+        <!-- Screen 1: Welcome / Hook -->
+        <div class="screen active" id="screen-1">
+            <div class="win95-window">
+                <div class="win95-titlebar">
+                    <span class="win95-titlebar-text">🏦 LegacyBank Pro™</span>
+                    <div class="win95-titlebar-buttons">
+                        <button class="win95-btn-titlebar">_</button>
+                        <button class="win95-btn-titlebar">□</button>
+                        <button class="win95-btn-titlebar">✕</button>
                     </div>
                 </div>
-                <div class="dialog-buttons">
-                    <button class="win95-btn win95-btn-primary" onclick="nextScreen()">Run Payroll</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Screen 2: Login -->
-    <div class="screen" id="screen-2">
-        <div class="win95-window">
-            <div class="win95-titlebar">
-                <span class="win95-titlebar-text">🔐 Security Verification</span>
-                <div class="win95-titlebar-buttons">
-                    <button class="win95-btn-titlebar">✕</button>
-                </div>
-            </div>
-            <div class="win95-content">
-                <div class="dialog-row">
-                    <div class="warning-icon"></div>
-                    <div class="dialog-text">
-                        <p><strong>Security Check Required</strong></p>
-                        <p>Please verify your identity to continue.</p>
-                    </div>
-                </div>
-                <div class="divider"></div>
-                <div class="form-row">
-                    <label>Mother's maiden name:</label>
-                    <input type="text" class="win95-input" placeholder="Required">
-                </div>
-                <div class="form-row">
-                    <label>First pet's name:</label>
-                    <input type="text" class="win95-input" placeholder="Required">
-                </div>
-                <div class="form-row">
-                    <label>Childhood fears:</label>
-                    <input type="text" class="win95-input" placeholder="Required">
-                </div>
-                <div class="dialog-buttons">
-                    <button class="win95-btn" onclick="prevScreen()">Cancel</button>
-                    <button class="win95-btn win95-btn-primary" onclick="nextScreen()">Verify</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Screen 3: Session Expired -->
-    <div class="screen" id="screen-3">
-        <div class="win95-window">
-            <div class="win95-titlebar">
-                <span class="win95-titlebar-text">❌ Error</span>
-                <div class="win95-titlebar-buttons">
-                    <button class="win95-btn-titlebar">✕</button>
-                </div>
-            </div>
-            <div class="win95-content">
-                <div class="dialog-row">
-                    <div class="error-icon">✕</div>
-                    <div class="dialog-text">
-                        <p><strong>ERROR 1987: Session Expired</strong></p>
-                        <p>You were inactive for 47 seconds while filling out the form.</p>
-                        <p>Please start over.</p>
-                    </div>
-                </div>
-                <div class="dialog-buttons">
-                    <button class="win95-btn win95-btn-primary" onclick="nextScreen()">OK</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Screen 4: Payroll Form -->
-    <div class="screen" id="screen-4">
-        <div class="win95-window">
-            <div class="win95-titlebar">
-                <span class="win95-titlebar-text">💰 Payroll Processing</span>
-                <div class="win95-titlebar-buttons">
-                    <button class="win95-btn-titlebar">_</button>
-                    <button class="win95-btn-titlebar">□</button>
-                    <button class="win95-btn-titlebar">✕</button>
-                </div>
-            </div>
-            <div class="win95-content">
-                <p><strong>Run Monthly Payroll</strong></p>
-                <div class="divider"></div>
-                <div class="form-row">
-                    <label>Amount:</label>
-                    <input type="text" class="win95-input" value="$47,250.00" readonly>
-                </div>
-                <div class="form-row">
-                    <label>Employees:</label>
-                    <input type="text" class="win95-input" value="12" readonly>
-                </div>
-                <div class="form-row">
-                    <label>Processing fee:</label>
-                    <input type="text" class="win95-input" value="$89.00" readonly>
-                </div>
-                <label class="win95-checkbox">
-                    <input type="checkbox" checked>
-                    I agree to the 47-page terms and conditions
-                </label>
-                <div class="dialog-buttons">
-                    <button class="win95-btn" onclick="prevScreen()">Cancel</button>
-                    <button class="win95-btn win95-btn-primary" onclick="nextScreen()">Process Payroll</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Screen 5: Processing -->
-    <div class="screen" id="screen-5">
-        <div class="win95-window">
-            <div class="win95-titlebar">
-                <span class="win95-titlebar-text">⏳ Processing...</span>
-                <div class="win95-titlebar-buttons">
-                    <button class="win95-btn-titlebar">✕</button>
-                </div>
-            </div>
-            <div class="win95-content">
-                <div class="dialog-row">
-                    <div style="font-size: 32px;">⏳</div>
-                    <div class="dialog-text">
-                        <p><strong>Processing your payroll<span class="loading-dots"></span></strong></p>
-                        <div class="win95-progress">
-                            <div class="win95-progress-bar" id="progress-bar"></div>
+                <div class="win95-content">
+                    <div class="dialog-row">
+                        <div class="info-icon">i</div>
+                        <div class="dialog-text">
+                            <p><strong>Welcome to LegacyBank Pro™</strong></p>
+                            <p>Your trusted business banking solution since 1974.</p>
+                            <p style="font-size: 11px; color: #666;">Best viewed in Netscape Navigator 4.0</p>
                         </div>
-                        <p style="font-size: 11px; color: #666;">Please do not close this window or press any buttons.</p>
+                    </div>
+                    <div class="dialog-buttons">
+                        <button class="win95-btn win95-btn-primary" onclick="nextScreen()">Run Payroll</button>
                     </div>
                 </div>
-                <div class="dialog-buttons">
-                    <button class="win95-btn" disabled>Cancel</button>
-                </div>
             </div>
         </div>
-    </div>
 
-    <!-- Screen 6: System Error -->
-    <div class="screen" id="screen-6">
-        <div class="win95-window">
-            <div class="win95-titlebar">
-                <span class="win95-titlebar-text">❌ System Error</span>
-                <div class="win95-titlebar-buttons">
-                    <button class="win95-btn-titlebar">✕</button>
-                </div>
-            </div>
-            <div class="win95-content" style="text-align: center;">
-                <img src="images/windows_alert.png" alt="System Error" style="max-width: 100%; margin-bottom: 15px;">
-                <div class="dialog-buttons">
-                    <button class="win95-btn win95-btn-primary" onclick="nextScreen()">OK</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Screen 7: Payroll Failed -->
-    <div class="screen" id="screen-7">
-        <div class="win95-window">
-            <div class="win95-titlebar">
-                <span class="win95-titlebar-text">❌ Payroll Error</span>
-                <div class="win95-titlebar-buttons">
-                    <button class="win95-btn-titlebar">✕</button>
-                </div>
-            </div>
-            <div class="win95-content">
-                <div class="dialog-row">
-                    <div class="error-icon">✕</div>
-                    <div class="dialog-text">
-                        <p><strong>Payroll failed.</strong></p>
-                        <p>Please try again on Monday.</p>
-                        <p style="font-size: 11px; color: #666; margin-top: 10px;">Error code: COBOL_OVERFLOW_1974</p>
+        <!-- Screen 2: Payroll Error -->
+        <div class="screen" id="screen-2">
+            <div class="win95-window">
+                <div class="win95-titlebar">
+                    <span class="win95-titlebar-text">❌ Payroll Error</span>
+                    <div class="win95-titlebar-buttons">
+                        <button class="win95-btn-titlebar">✕</button>
                     </div>
                 </div>
-                <div class="dialog-buttons">
-                    <button class="win95-btn" onclick="nextScreen()">Help</button>
-                    <button class="win95-btn win95-btn-primary" onclick="nextScreen()">Retry</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Screen 8: Maintenance -->
-    <div class="screen" id="screen-8">
-        <div class="win95-window">
-            <div class="win95-titlebar">
-                <span class="win95-titlebar-text">🔧 System Maintenance</span>
-                <div class="win95-titlebar-buttons">
-                    <button class="win95-btn-titlebar">✕</button>
-                </div>
-            </div>
-            <div class="win95-content">
-                <div class="dialog-row">
-                    <div class="warning-icon"></div>
-                    <div class="dialog-text">
-                        <p><strong>Scheduled Maintenance</strong></p>
-                        <p>Our systems are currently being updated.</p>
-                        <p>Please try again:</p>
-                        <ul style="margin: 10px 0 0 20px;">
-                            <li>Monday - Thursday</li>
-                            <li>10:00 AM - 2:00 PM</li>
-                            <li>Excluding public holidays</li>
-                        </ul>
+                <div class="win95-content">
+                    <div class="dialog-row">
+                        <div class="error-icon">✕</div>
+                        <div class="dialog-text">
+                            <p><strong>Payroll failed.</strong></p>
+                            <p>Please try again on Monday.</p>
+                            <p style="font-size: 11px; color: #666;">Error: COBOL_OVERFLOW_1974</p>
+                        </div>
+                    </div>
+                    <div class="dialog-buttons">
+                        <button class="win95-btn win95-btn-primary" onclick="nextScreen()">OK</button>
                     </div>
                 </div>
-                <div class="dialog-buttons">
-                    <button class="win95-btn win95-btn-primary" onclick="nextScreen()">OK</button>
-                </div>
             </div>
         </div>
-    </div>
 
-    <!-- Screen 9: Visit Branch -->
-    <div class="screen" id="screen-9">
-        <div class="win95-window">
-            <div class="win95-titlebar">
-                <span class="win95-titlebar-text">ℹ️ Important Notice</span>
-                <div class="win95-titlebar-buttons">
-                    <button class="win95-btn-titlebar">✕</button>
-                </div>
-            </div>
-            <div class="win95-content">
-                <div class="dialog-row">
-                    <div class="info-icon">i</div>
-                    <div class="dialog-text">
-                        <p><strong>For security reasons, this transaction cannot be processed online.</strong></p>
-                        <p>Please visit your local branch with:</p>
-                        <ul style="margin: 10px 0 0 20px;">
-                            <li>2 forms of ID</li>
-                            <li>Proof of address</li>
-                            <li>Signed authorization form (fax available)</li>
-                            <li>Your patience</li>
-                        </ul>
+        <!-- Screen 3: This is banking today -->
+        <div class="screen" id="screen-3">
+            <div class="win95-window">
+                <div class="win95-titlebar">
+                    <span class="win95-titlebar-text">🏆 This is banking in 2024</span>
+                    <div class="win95-titlebar-buttons">
+                        <button class="win95-btn-titlebar">_</button>
+                        <button class="win95-btn-titlebar">□</button>
+                        <button class="win95-btn-titlebar">✕</button>
                     </div>
                 </div>
-                <div class="dialog-buttons">
-                    <button class="win95-btn win95-btn-primary" onclick="nextScreen()">OK</button>
+                <div class="win95-content">
+                    <img src="images/90s-banking.png" alt="Legacy banking interfaces" class="shame-image">
+                    <p style="text-align: center; font-size: 11px; color: #666;">Actual banking interfaces. We couldn't make this up.</p>
+                    <div class="dialog-buttons">
+                        <button class="win95-btn win95-btn-primary" onclick="nextScreen()">Continue</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Screen 4: Pending Counter -->
+        <div class="screen" id="screen-4">
+            <div class="win95-window">
+                <div class="win95-titlebar">
+                    <span class="win95-titlebar-text">📊 Global Transaction Status</span>
+                    <div class="win95-titlebar-buttons">
+                        <button class="win95-btn-titlebar">_</button>
+                        <button class="win95-btn-titlebar">□</button>
+                        <button class="win95-btn-titlebar">✕</button>
+                    </div>
+                </div>
+                <div class="win95-content">
+                    <p style="text-align: center;"><strong>Transactions "pending" worldwide:</strong></p>
+                    <div class="counter-display" id="pending-count">2,847,293,481</div>
+                    <p style="font-size: 11px; text-align: center; color: #666;">Including yours. ETA: 3-5 business days.</p>
+                    <div class="dialog-buttons">
+                        <button class="win95-btn win95-btn-primary" onclick="showBSOD()">Give Up</button>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Screen 10: Hall of Shame -->
-    <div class="screen" id="screen-10">
-        <div class="win95-window">
-            <div class="win95-titlebar">
-                <span class="win95-titlebar-text">🏆 Meanwhile, in banking...</span>
-                <div class="win95-titlebar-buttons">
-                    <button class="win95-btn-titlebar">_</button>
-                    <button class="win95-btn-titlebar">□</button>
-                    <button class="win95-btn-titlebar">✕</button>
-                </div>
-            </div>
-            <div class="win95-content">
-                <p style="text-align: center; margin-bottom: 10px;"><strong>This is what banking still looks like in 2024:</strong></p>
-                <img src="images/90s-banking.png" alt="90s banking" class="shame-image">
-                <p style="font-size: 10px; text-align: center; color: #666;">Actual banking interfaces. We couldn't make this up.</p>
-                <div class="dialog-buttons">
-                    <button class="win95-btn win95-btn-primary" onclick="nextScreen()">Continue</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Screen 11: Pending Counter -->
-    <div class="screen" id="screen-11">
-        <div class="win95-window">
-            <div class="win95-titlebar">
-                <span class="win95-titlebar-text">📊 Global Transaction Status</span>
-                <div class="win95-titlebar-buttons">
-                    <button class="win95-btn-titlebar">_</button>
-                    <button class="win95-btn-titlebar">□</button>
-                    <button class="win95-btn-titlebar">✕</button>
-                </div>
-            </div>
-            <div class="win95-content">
-                <p style="text-align: center;"><strong>Transactions currently "pending" worldwide:</strong></p>
-                <div class="counter-display" id="pending-count">2,847,293,481</div>
-                <p style="font-size: 11px; text-align: center; margin-top: 10px; color: #666;">Including yours. Estimated wait: 3-5 business days.</p>
-                <div class="dialog-buttons">
-                    <button class="win95-btn win95-btn-primary" onclick="showBSOD()">Give Up</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- BSOD Final Screen -->
+    <!-- BSOD Final -->
     <div class="bsod" id="bsod">
         <div class="bsod-title">Zazu</div>
         <div class="bsod-text">
@@ -753,9 +534,8 @@
         <div class="bsod-text" style="margin-top: 30px;">
             <span class="bsod-highlight">Business banking, built for today.</span>
         </div>
-        <div class="bsod-text" style="margin-top: 20px; font-size: 14px;">
-            No fax. No branch visits.<br>
-            No spreadsheets pretending to be banking.
+        <div class="bsod-text" style="font-size: 14px;">
+            No fax. No branch visits. No spreadsheets.
         </div>
         <div class="bsod-text" style="margin-top: 40px;">
             Press any key<span class="bsod-cursor">_</span>
@@ -764,69 +544,26 @@
 
     <script>
         let currentScreen = 1;
-        const totalScreens = 11;
+        const totalScreens = 4;
 
-        function updateStepIndicator() {
-            const indicator = document.getElementById('step-indicator');
-            if (currentScreen <= totalScreens) {
-                indicator.textContent = `Step ${currentScreen} of ${totalScreens}`;
-            } else {
-                indicator.textContent = '';
-            }
+        function updateDots() {
+            document.querySelectorAll('.step-dot').forEach((dot, i) => {
+                dot.classList.toggle('active', i < currentScreen);
+            });
         }
 
         function showScreen(num) {
-            // Hide all screens
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-
-            // Show target screen
             const screen = document.getElementById(`screen-${num}`);
-            if (screen) {
-                screen.classList.add('active');
-            }
-
-            updateStepIndicator();
+            if (screen) screen.classList.add('active');
+            updateDots();
         }
 
         function nextScreen() {
-            currentScreen++;
-
-            // Special handling for processing screen
-            if (currentScreen === 5) {
-                showScreen(5);
-                simulateProgress();
-                return;
-            }
-
-            showScreen(currentScreen);
-        }
-
-        function prevScreen() {
-            if (currentScreen > 1) {
-                currentScreen--;
+            if (currentScreen < totalScreens) {
+                currentScreen++;
                 showScreen(currentScreen);
             }
-        }
-
-        function simulateProgress() {
-            const progressBar = document.getElementById('progress-bar');
-            let progress = 0;
-
-            const interval = setInterval(() => {
-                progress += Math.random() * 15;
-                if (progress > 87) {
-                    progress = 87;
-                }
-                progressBar.style.width = progress + '%';
-
-                if (progress >= 87) {
-                    clearInterval(interval);
-                    setTimeout(() => {
-                        currentScreen++;
-                        showScreen(currentScreen);
-                    }, 1500);
-                }
-            }, 400);
         }
 
         function showBSOD() {
@@ -834,14 +571,20 @@
             document.getElementById('bsod').style.display = 'flex';
         }
 
-        // Listen for Enter key on BSOD
+        // Keyboard & click navigation
         document.addEventListener('keydown', function(e) {
-            if (document.getElementById('bsod').style.display === 'flex') {
+            const bsod = document.getElementById('bsod');
+            if (bsod.style.display === 'flex') {
                 window.location.href = 'https://get-zazu.com';
+            } else if (e.key === 'Enter' || e.key === ' ') {
+                if (currentScreen < totalScreens) {
+                    nextScreen();
+                } else {
+                    showBSOD();
+                }
             }
         });
 
-        // Make BSOD clickable
         document.getElementById('bsod').addEventListener('click', function() {
             window.location.href = 'https://get-zazu.com';
         });
@@ -849,18 +592,12 @@
         // Pending counter
         let pending = 2847293481;
         const pendingEl = document.getElementById('pending-count');
-
-        function updatePending() {
+        setInterval(() => {
             pending += Math.floor(Math.random() * 50) + 10;
-            if (pendingEl) {
-                pendingEl.textContent = pending.toLocaleString();
-            }
-            setTimeout(updatePending, 500 + Math.random() * 1000);
-        }
-        updatePending();
+            pendingEl.textContent = pending.toLocaleString();
+        }, 800);
 
-        // Initialize
-        updateStepIndicator();
+        updateDots();
     </script>
 </body>
 </html>

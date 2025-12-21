@@ -361,10 +361,41 @@
         @media (max-width: 600px) {
             .bg-window { display: none; }
             .background-layer { display: none; }
+
+            body { font-size: 14px; }
+
             .win95-window { max-width: 100%; }
-            .bsod { padding: 5%; }
-            .bsod-text { font-size: 14px; }
-            .bsod-highlight { font-size: 18px; }
+            .win95-content { padding: 15px; }
+            .win95-titlebar { font-size: 14px; padding: 5px 8px; }
+
+            .dialog-text p { font-size: 15px; line-height: 1.5; margin-bottom: 12px; }
+            .dialog-row { gap: 12px; }
+
+            .win95-btn { font-size: 14px; padding: 10px 25px; }
+
+            .error-icon, .info-icon { width: 36px; height: 36px; font-size: 22px; }
+
+            .counter-display { font-size: 20px; padding: 12px; }
+
+            .bsod { padding: 8% 5%; }
+            .bsod-title { font-size: 18px; padding: 5px 20px; }
+            .bsod-text { font-size: 16px; line-height: 1.8; margin-bottom: 12px; }
+            .bsod-highlight { font-size: 22px; }
+            .bsod-key { font-size: 14px; padding: 3px 10px; }
+            .bsod-progress { width: 250px; }
+
+            .step-dot { width: 12px; height: 12px; }
+        }
+
+        /* Extra small phones */
+        @media (max-width: 380px) {
+            .win95-content { padding: 12px; }
+            .dialog-text p { font-size: 14px; }
+            .win95-btn { font-size: 13px; padding: 8px 20px; min-width: 80px; }
+            .counter-display { font-size: 18px; }
+            .bsod-text { font-size: 15px; }
+            .bsod-highlight { font-size: 20px; }
+            .bsod-progress { width: 200px; }
         }
     </style>
 </head>
